@@ -4,7 +4,6 @@ const AiService = require('./services/aiService')
 const messageService = new MessageService()
 const aiService = new AiService()
 
-// ponytail: cola en memoria para una sola instancia; usar Redis/BullMQ si escala a varios procesos
 function buildContext(all, saved) {
     const savedId = String(saved._id)
     return all
