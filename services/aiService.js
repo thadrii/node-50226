@@ -3,15 +3,16 @@ const { ai } = require('../config')
 class AiService {
   constructor() {}
 
-  async reply(history = []) {
+  async reply(history = [], targetUser = '') {
+    const targetHint = targetUser ? ` Responde directamente a ${targetUser} sobre su último mensaje.` : ''
     const messages = [
       {
         role: 'system',
-        content: 'Eres un asistente útil y claro. Responde en español de forma concisa.'
+        content: `Eres un asistente útil y claro. Responde en español de forma concisa.${targetHint}`
       },
       ...history.slice(-10).map((m) => ({
         role: m.username === 'IA' ? 'assistant' : 'user',
-        content: m.message
+        content: m.username === 'IA' ? m.message : `${m.username || 'Anónimo'}: ${m.message}`
       }))
     ]
 
