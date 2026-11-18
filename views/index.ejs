@@ -34,12 +34,12 @@
             messages.innerHTML = ''
             for (const message of m) {
                 const item = document.createElement('div')
-                item.className = 'message'
+                item.className = message.username === 'IA' ? 'message ia' : 'message'
                 item.textContent = `${message.username || 'Anónimo'}: ${message.message}`
                 messages.appendChild(item)
-                messages.appendChild(document.createElement('br'))
             }
             messages.scrollTop = messages.scrollHeight
+            writing.textContent = ''
         })
 
         writeMessage.addEventListener('keydown', (event) => {
