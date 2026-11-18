@@ -3,27 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi pagina</title>
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="title">
+        <h1>EJEMPLO DE UN CHAT</h1>
+    </div>
     <div id="chat">
         <input type="text" id="username" placeholder="Ingrese su nombre de Usuario">
+        
+        <div id="messages">
+        </div>
+        
+        <div id="writing">
+        </div>
+        
+        <textarea id="writeMessage" placeholder="Ingrese su Mensaje"></textarea>
     </div>
 
-    <div id="messages">
-        <div class="message">JackTejada:Hola</div>
-        <div class="message">JackTejada:Hola</div>
-    </div>
-
-    <div id="writing">
-
-    </div>
-
-    <textarea id="write-message" placeholder="Ingrese su Mensaje"></textarea>
-
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="socket.io/socket.io.js"></script>
     <script>
         const socket = io()
+        const username = document.getElementById('username')
+        const writeMessage = document.getElementById('writeMessage')
+        const writing = document.getElementById('writing')
+        const messages = document.getElementById('messages')
+
+        socket.on('all-messages', (m) => {
+            let content = ''
+            for (const message of m) {
+                content += `
+                <div class="message">
+                    ${message.username}:${message.message}
+                </div>
+                <br>
+                `
+            }
+            messages.innerHTML = content
+            messages.scrollTop = messages.scrollHeight
+        })
     </script>
 </body>
 </html>
