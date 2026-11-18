@@ -1,17 +1,28 @@
-const { Socket } = require("socket.io")
+const MessageService = require('./services/messageService')
+const messageService = new MessageService()
 
-module.exports=(io)=>{
-    let messages=[{username:"fake-user", message:"Welcome"}]
-    io.on('connection',(socket)=>{
-    console.log("un nuevo usuario conectado")
-    io.emit('all-messages',messages)
+module.exports = (io) => {
+    io.on('connection', async (socket) => {
+        console.log("un nuevo usuario conectado")
+        try {
+            const messages = await messageService.getAll()
+            socket.emit('all-messages', messages)
+        } catch (err) {
+            console.error('Error al cargar mensajes:', err)
+        }
+
+        socket.on('writing', (username) => {
+            socket.broadcast.emit('writing', username)
+        })
+
+        socket.on('new-message', async (data) => {
+            try {
+                await messageService.create(data)
+                const messages = await messageService.getAll()
+                io.emit('all-messages', messages)
+            } catch (err) {
+                console.error('Error al guardar mensaje:', err)
+            }
+        })
     })
-  socket.on('writing', () => {
-    socket.broadcast.emit('writing', username)
-  
-  })
-  socket.on('new-message', (data) => {
-    messages.push(data)
-    io.enit('all-messages', messages)
-  })
 }
